@@ -8,7 +8,7 @@
 
 #include<ESP8266WiFi.h>
 #include<espnow.h>
-#include <Ultrasonic.h>
+//#include <Ultrasonic.h>
 #include <NewPing.h>
 
 
@@ -25,10 +25,10 @@ const int MAX_DIST=80;
 
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DIST);
 
-Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
+//Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
 
 //int distance;
-uint8_t receiverAddress[] = {0x50, 0x02, 0x91, 0x69, 0x6F, 0x22};   // please update this with the MAC address of the receiver
+uint8_t receiverAddress[] = {0x50, 0x02, 0x91, 0x69, 0x6F, 0x22};   //  MAC address of the receiver
 
 struct __attribute__((packed)) dataPacket {
   int sensor_name;
