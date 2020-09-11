@@ -1,6 +1,6 @@
 // ESP8266 with motor shield
 // info here: https://hackaday.io/project/8856-incubator-controller/log/29291-node-mcu-motor-shield
-
+// and here: https://cdn.hackaday.io/files/8856378895104/user-mannual-for-esp-12e-motor-shield.pdf
 
 #include<ESP8266WiFi.h>
 #include<espnow.h>
