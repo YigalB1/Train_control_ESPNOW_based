@@ -2,7 +2,7 @@
 #include<espnow.h>
 
 #include<classes.cpp>
-//#include<headers.h>  xxx
+//#include<headers.h>  
 
 //#define MOTOR_PWM 10
 //#define MOTOR_EN1 9
@@ -39,15 +39,15 @@ const int SAMPLE_TIME = 200;
 const int SPEEDING = 1;
 const int SLOWING = 2;
 const int STOPPING = 3;
-const int JUNK_VAL = 7777;
-const int DIST_BUFF_SIZE = 20;
+// const int JUNK_VAL = 7777;
+// const int DIST_BUFF_SIZE = 20;
 
-int train_speed, L_distance, R_distance, train_direction, train_status;
-int current_dev, current_dist;
+ // int train_speed, L_distance, R_distance, train_direction, train_status;
+//int current_dev, current_dist;
 unsigned long curr_time, time_prev;
 
 const int DIST_ARRAY_SIZE = 100;
-int dist_array[DIST_ARRAY_SIZE];
+
 int time_array[DIST_ARRAY_SIZE];
 int speed_array[DIST_ARRAY_SIZE];
 int dist_cnt = 0;
@@ -142,9 +142,9 @@ class Motor {
 Motor train_motor;
 
 
-int bad_reads_cnt = 0;
-int good_reads_cnt = 0;
-int dist_buffer[DIST_BUFF_SIZE];
+// int bad_reads_cnt = 0;
+//int good_reads_cnt = 0;
+// int dist_buffer[DIST_BUFF_SIZE];
 int last_good_dist=IN_RANGE;
 
 int read_distance(int dev);
@@ -155,7 +155,7 @@ void decrease_speed();
 // ******************* SETUP ***************/
 void setup()
 {
-  int l0;
+  // int l0;
 
    // Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
@@ -179,52 +179,29 @@ void setup()
   delay(2000);
   digitalWrite(BLUE_LED, LOW);
 
+/*
   for (int i=0;i<DIST_BUFF_SIZE;i++) {
     dist_buffer[i]=  JUNK_VAL;
   }
+*/
+
   train_motor.stop(); // make sure it is stopped
-  time_prev = millis();
+  //time_prev = millis();
 
   Serial.begin(9600);
   Serial.println("Starting Setup");
   
-  train_speed = 0;
-  train_motor.train_speed=0;
-
-  l0 = read_distance(left_dev);
-  Serial.print("first read (left). l0: ");
-  Serial.println(l0);
-
-  if (l0 <= VERY_CLOSE) {
-    train_direction = RIGHT;
-    current_dev = right_dev;
-    Serial.println("-> start with RIGHT");
-  }
-  else {
-    train_direction = LEFT;
-    current_dev = left_dev;
-    Serial.println("-> start with LEFT");
-  }
-
-  Serial.println("** Still in SETUP");
-  delay (1000);
-
-  curr_time = millis();
-  Serial.print(time_prev);
-  Serial.print("//");
-  Serial.print(curr_time);
-  Serial.print("/delta/");
-  Serial.print(curr_time - time_prev);
-  Serial.println("//");
+  // train_speed = 0;
+  //train_motor.speed = 0;
 
   for (int i = 0; i < DIST_ARRAY_SIZE; i++)
   {
-    dist_array[i] = JUNK_VAL;
+   
     time_array[i] = JUNK_VAL;
     speed_array[i] = JUNK_VAL;
   }
-  train_speed = 0;
-  train_motor.Go(train_direction, train_speed);  // TBD use here the speed inside the class
+  //train_speed = 0;
+  //train_motor.Go(train_motor.direction , train_motor.speed);  // TBD use here the speed inside the class
 
   Serial.println("******** End of SETUP ****");
 }
@@ -235,13 +212,7 @@ void setup()
 void loop()
 {
 
-  //int distance;
-  
-//  unsigned long delta_time, t1, t2;
-  //int dev;
-
-
-  if (RIGHT == train_direction)
+  if (RIGHT == train_motor.direction)
     {
       train_motor.distance = right_sensor.distance_read;
       //Serial.print("R>> ");
@@ -254,84 +225,50 @@ void loop()
 
 
 
-  if (current_dist < 2)
-    {
-    bad_reads_cnt += 1;
-    return;
-    }
-
-  if (current_dist > 100)
-    current_dist=101;
   
-    good_reads_cnt += 1;
-
-  for (int i=DIST_BUFF_SIZE-1;i>=1;i--)
-    {
-    dist_buffer[i] = dist_buffer[i-1];
-    }
-  dist_buffer[0] = current_dist;
-
-
-
-  dist_array[dist_cnt] = current_dist;
-//  time_array[dist_cnt] = t2 - t1;
-//  speed_array[dist_cnt] = train_speed;
-  dist_cnt++;
-  if (DIST_ARRAY_SIZE == dist_cnt)
-    dist_cnt = 0;
 
   // the train is assumed to be moving here
   // if it is in station, it will be in the fucntion, not here
 
   boolean stopping=false;
-  if (current_dist < VERY_CLOSE )
+  if (train_motor.distance < VERY_CLOSE )
     {
     train_motor.stop();
-    train_speed=ZERO;
+    train_motor.speed = ZERO;
     stopping=true;
     }
-  else if (current_dist < CLOSE )
+  else if (train_motor.distance < CLOSE )
     {
       slow_down();  
     }
-    else if (current_dist < IN_RANGE )
+    else if (train_motor.distance < IN_RANGE )
       {
-        //slave.Turn_leds_OFF (dev);
-        //slave.Turn_led_ON (dev, GREEN);
         decrease_speed();
       }
       else
         {
-          // speed it up baby, out of range
           increase_speed();
         }
           
   
   if (!stopping)
-    train_motor.Go(train_direction, train_speed);
+    train_motor.Go(train_motor.direction, train_motor.speed);
   else {
-      //slave.Turn_led_ON (left_dev, BLUE);
-      //slave.Turn_leds_OFF(right_dev);
       // the train is stopping
       // print the last dist readings
-      for (int i=DIST_BUFF_SIZE-1;i>=0;i--)
-        {
-        Serial.print(dist_buffer[i]);
-        Serial.print("..");
-        dist_buffer[i]=JUNK_VAL;
-        } // of for
+
     
    //  delay(5000); // wait 10 seconds 
       // change directions
-      if (train_direction==LEFT)
+      if (train_motor.direction == LEFT)
         {
-        train_direction=RIGHT;
+        train_motor.direction = RIGHT;
 //        slave.Turn_led_ON (right_dev, BLUE);
 //        slave.Turn_leds_OFF(left_dev);
         } // of if
       else
         {
-        train_direction=LEFT;
+        train_motor.direction = LEFT;
 //        slave.Turn_led_ON (left_dev, BLUE);
 //        slave.Turn_leds_OFF(right_dev);
         } // of else
@@ -360,19 +297,19 @@ void loop()
 
 // ****************** SLOW_DOWN **********************
 void slow_down() {
-  train_speed = MIN_SPEED;
+  train_motor.speed = MIN_SPEED;
 }
 // ****************** increase_speed **********************
 void increase_speed() {
-  train_speed += SPEED_INC;
-  if (train_speed > MAX_SPEED)
-    train_speed = MAX_SPEED;
+  train_motor.speed += SPEED_INC;
+  if (train_motor.speed > MAX_SPEED)
+    train_motor.speed = MAX_SPEED;
 }
 // ****************** decrease_speed **********************
 void decrease_speed() {
-  train_speed -= SPEED_INC;
-  if (train_speed < MIN_SPEED)
-    train_speed = MIN_SPEED;
+  train_motor.speed -= SPEED_INC;
+  if (train_motor.speed < MIN_SPEED)
+    train_motor.speed = MIN_SPEED;
 }
 
 // ****************** read_distance **********************
