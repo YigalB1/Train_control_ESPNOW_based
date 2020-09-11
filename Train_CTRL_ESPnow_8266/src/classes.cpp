@@ -26,28 +26,63 @@ class Motor {
       }
     } // of GO routine
 
+
     void Go_left ( int _speed_) {
       digitalWrite(MOTOR_EN1, HIGH);
       digitalWrite(MOTOR_EN2, LOW);
       analogWrite(MOTOR_PWM, _speed_);
     } // of GO LEFT routine
 
+
     void Go_right ( int _speed_) {
       digitalWrite(MOTOR_EN1, LOW);
       digitalWrite(MOTOR_EN2, HIGH);
       analogWrite(MOTOR_PWM, _speed_);
     } // of GO RIGHT routine
+
+
     void stop () {
       digitalWrite(MOTOR_EN1, LOW);
       digitalWrite(MOTOR_EN2, LOW);
       analogWrite(MOTOR_PWM, ZERO);
-
-      for (int i=DIST_BUFF_SIZE-1;i>=0;i--) {
-        Serial.print(dist_buffer[i]);
-        Serial.print("..");
-        dist_buffer[i]=JUNK_VAL;
-      } // of for
     } // of STOP routine
+
+
+    // ****************** increase_speed **********************
+    void increase_speed() {
+
+      if (fixed_speed)
+        return; // speed is not changing
+
+
+      speed += SPEED_INC;
+      if (speed > MAX_SPEED)
+        speed = MAX_SPEED;
+    }
+    // ****************** decrease_speed **********************
+    void decrease_speed() {
+      if (fixed_speed)
+        return; // speed is not changing
+
+      speed -= SPEED_INC;
+      if (speed < MIN_SPEED)
+        speed = MIN_SPEED;
+    }
+
+// ****************** SLOW_DOWN **********************
+void slow_down() {
+  if (fixed_speed)
+    return; // speed is not changing
+
+  speed = MIN_SPEED;
+} // of SLOW DOWN
+
+
+
+
+
+
+
 
     void calc_speed() {
       if (distance < 2)
@@ -62,15 +97,55 @@ class Motor {
       if (distance > 100) {
         distance=101;
       }
-    for (int i=DIST_BUFF_SIZE-1;i>=1;i--) {
-      dist_buffer[i] = dist_buffer[i-1];
-    }
-    dist_buffer[0] = distance;
-  
-  
-    
-
+      for (int i=DIST_BUFF_SIZE-1;i>=1;i--) {
+        dist_buffer[i] = dist_buffer[i-1];
+      }
+      dist_buffer[0] = distance;   
     } // of CALC SPEED routine
+
+    void move_on() {
+      // here we actually move the train, or stop it in the stattion
+      if (distance < VERY_CLOSE )
+      {
+        stop(); // change output pins to stop the train
+        speed = ZERO;
+        delay(TIME_IN_STATION);
+
+        if (direction == LEFT) {
+          direction = RIGHT;
+        }
+        else {
+          direction = LEFT;
+        }
+        return;
+      } // of IF 
+
+      if (distance < CLOSE ) {
+        slow_down(); 
+        Go(direction, speed);
+        return;
+      }
+
+    if (distance < IN_RANGE )
+      {
+        decrease_speed();
+        Go(direction, speed);
+        return;
+      }
+      
+    increase_speed();
+    Go(direction, speed);
+    return;    
+          
+  
+  
+
+
+
+
+
+
+    } // of move_on
 
 };  // of Motor class
 
