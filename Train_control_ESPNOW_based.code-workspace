@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "Train_CTRL_ESPnow_8266",
+			"path": "Train_CTRL_ESPnow_8266"
+		},
+		{
+			"name": "Train_sensor_ESPnow_8266",
+			"path": "Train_sensor_ESPnow_8266"
+		}
+	],
+	"settings": {}
+}

@@ -2,10 +2,11 @@
 #include<espnow.h>
 
 #include<classes.cpp>
+//#include<headers.h>
 
-#define MOTOR_PWM 10
-#define MOTOR_EN1 9
-#define MOTOR_EN2 8
+//#define MOTOR_PWM 10
+//#define MOTOR_EN1 9
+//#define MOTOR_EN2 8
 #define RED_LED   4
 #define GREEN_LED 3
 #define BLUE_LED  2
@@ -16,13 +17,13 @@
 #define BLUE  3
 
 
-const int ZERO = 0;
+//const int ZERO = 0;
 const int Num_Of_Slaves = 5;
 const int Addr_Space = 127;
 const int left_dev = 9;
 const int right_dev = 10;
-const int LEFT = 0;
-const int RIGHT = 1;
+//const int LEFT = 0;
+//const int RIGHT = 1;
 const int UNKNOWN = 2;
 const int STOP = 0;
 const int ON_MOVE = 1;
@@ -50,6 +51,22 @@ int dist_array[DIST_ARRAY_SIZE];
 int time_array[DIST_ARRAY_SIZE];
 int speed_array[DIST_ARRAY_SIZE];
 int dist_cnt = 0;
+
+
+/*
+class Sensor {
+  public:
+    int distance_read;
+    void Turn_led_ON ( int _side, int _led) {
+      // transmit to LED on the slected side 
+      } // of Turn_led_ON
+    
+    void Turn_leds_OFF ( int _side) {
+      // was transmit to selected device about leds 
+      } // of Turn_led_OFF
+}; // of Slave class
+*/
+
 
 Sensor left_sensor;
 Sensor right_sensor;
@@ -80,24 +97,16 @@ void OnDataRecv(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
 }
 
 
+
+
+
+
+
 /*
-class Sensor {
-  int distance_read;
-  public:
-    void Turn_led_ON ( int _side, int _led) {
-      // transmit to LED on the slected side 
-      } // of Turn_led_ON
-    
-    void Turn_leds_OFF ( int _side) {
-      // was transmit to selected device about leds 
-      } // of Turn_led_OFF
-}; // of Slave class
-*/
-
-
 class Motor {
   public:
-  int train_speed; // in work, to use as the speed of the train instead of global variable
+  int train_speed = 0; // in work, to use as the speed of the train instead of global variable
+  int direction = LEFT;
 
     void Go ( int _direction, int _speed) {
       if (LEFT == _direction) {
@@ -125,7 +134,10 @@ class Motor {
       analogWrite(MOTOR_PWM, ZERO);
     }
 
-};
+};  // of Motor class
+*/
+
+
 
 Motor train_motor;
 
@@ -226,21 +238,21 @@ void loop()
   //int distance;
   
 //  unsigned long delta_time, t1, t2;
-  int dev;
+  //int dev;
 
 
   if (RIGHT == train_direction)
     {
-    dev = right_dev;
-    //Serial.print("R>> ");
+      train_motor.distance = right_sensor.distance_read;
+      //Serial.print("R>> ");
     }
   else
     {
-    dev = left_dev;
-    //Serial.print("L>> ");
+      train_motor.distance = left_sensor.distance_read;
+      //Serial.print("L>> ");
     }
 
-current_dist = read_distance(dev);
+
 
   if (current_dist < 2)
     {

@@ -8,8 +8,9 @@
 
 #include<ESP8266WiFi.h>
 #include<espnow.h>
-//#include <Ultrasonic.h>
-#include <NewPing.h>
+#include <Ultrasonic.h>
+//#include <NewPing.h>
+
 
 
 #define MY_NAME         "CONTROLLER_NODE"
@@ -23,9 +24,9 @@ const int ECHO_PIN = 5;    //D1 Or GPIO-5 of nodemcu
 const int led_2nd = 2;  //D4 Or GPIO-2 of nodemcu
 const int MAX_DIST=80;
 
-NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DIST);
+//NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DIST);
 
-//Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
+Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
 
 //int distance;
 uint8_t receiverAddress[] = {0x50, 0x02, 0x91, 0x69, 0x6F, 0x22};   //  MAC address of the receiver
@@ -48,25 +49,14 @@ int measure_dist(int _trig,int _echo)
 {
   //long duration;
   int l_distance;
-  /*
-  digitalWrite(_trig, LOW);   // Makes trigPin low
-  delayMicroseconds(2);       // 2 micro second delay 
+  
+  l_distance = ultrasonic.read();
+  //l_distance = sonar.ping_cm();
 
-  digitalWrite(_trig, HIGH);  // tigPin high
-  delayMicroseconds(10);      // trigPin high for 10 micro seconds
-  digitalWrite(_trig, LOW);   // trigPin low
-
-  duration = pulseIn(_echo, HIGH);   //Read echo pin, time in microseconds
-  l_distance= duration*0.034/2;        //Calculating actual/real distance
-// tring lib instead of the above
-  */
-  //l_distance = ultrasonic.read();
-  l_distance = sonar.ping_cm();
-
-Serial.print("  ....  ");
-Serial.print(l_distance);
-Serial.print("     ....  ");
-//delay(500);
+//Serial.print("  ....  ");
+//Serial.print(l_distance);
+//Serial.print("     ....  ");
+delay(300);
   return l_distance;
 }
 
@@ -108,15 +98,15 @@ void loop() {
   packet.sensor_name = sensor_name;
   packet.sensor_dist = distance;
 
-  Serial.print("Sending ");
+  Serial.print("Sensor: ");
   Serial.print(sensor_name);
-  Serial.print(" / ");
+  Serial.print("    distance:  ");
   Serial.print(distance);
   Serial.print(" ");
 
-  int32_t ret_value;
-  ret_value = esp_now_send(receiverAddress, (uint8_t *) &packet, sizeof(packet));
-  Serial.println(ret_value);
+  
+  esp_now_send(receiverAddress, (uint8_t *) &packet, sizeof(packet));
+  
   
   digitalWrite(LED_BUILTIN, LOW);
   delay(400);
