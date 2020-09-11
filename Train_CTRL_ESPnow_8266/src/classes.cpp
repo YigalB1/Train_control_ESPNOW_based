@@ -28,22 +28,18 @@ class Motor {
 
 
     void Go_left ( int _speed_) {
-      digitalWrite(MOTOR_EN1, HIGH);
-      digitalWrite(MOTOR_EN2, LOW);
+      digitalWrite(MOTOR_DIR, LEFT);      
       analogWrite(MOTOR_PWM, _speed_);
     } // of GO LEFT routine
 
 
     void Go_right ( int _speed_) {
-      digitalWrite(MOTOR_EN1, LOW);
-      digitalWrite(MOTOR_EN2, HIGH);
+      digitalWrite(MOTOR_DIR, RIGHT);         
       analogWrite(MOTOR_PWM, _speed_);
     } // of GO RIGHT routine
 
 
     void stop () {
-      digitalWrite(MOTOR_EN1, LOW);
-      digitalWrite(MOTOR_EN2, LOW);
       analogWrite(MOTOR_PWM, ZERO);
     } // of STOP routine
 
@@ -51,9 +47,12 @@ class Motor {
     // ****************** increase_speed **********************
     void increase_speed() {
 
-      if (fixed_speed)
+      if (fixed_speed) {
+        speed = MAX_SPEED;
         return; // speed is not changing
-
+      }
+        
+      // speed is not fixed
 
       speed += SPEED_INC;
       if (speed > MAX_SPEED)

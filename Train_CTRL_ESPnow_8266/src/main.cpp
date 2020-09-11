@@ -1,51 +1,14 @@
+// ESP8266 with motor shield
+// info here: https://hackaday.io/project/8856-incubator-controller/log/29291-node-mcu-motor-shield
+
+
 #include<ESP8266WiFi.h>
 #include<espnow.h>
-
 #include<classes.cpp>
-//#include<headers.h>  
-
-//#define MOTOR_PWM 10
-//#define MOTOR_EN1 9
-//#define MOTOR_EN2 8
-#define RED_LED   4
-#define GREEN_LED 3
-#define BLUE_LED  2
-#define LED_CMD 2
-#define LEDS_OFF_CMD 4
-#define RED   1
-#define GREEN 2
-#define BLUE  3
-
-
-//const int ZERO = 0;
-const int Num_Of_Slaves = 5;
-const int Addr_Space = 127;
-const int left_dev = 9;
-const int right_dev = 10;
-//const int LEFT = 0;
-//const int RIGHT = 1;
-const int UNKNOWN = 2;
-const int STOP = 0;
-const int ON_MOVE = 1;
-// const int VERY_CLOSE = 20;
-//const int CLOSE = 20;
-//const int IN_RANGE = 40;
-//const int MIN_SPEED = 120; // was 120
-const int SLOW_SPEED = 140;
-//const int MAX_SPEED = 180; // was 180
-//const int SPEED_INC = 5;
-//const int TIME_IN_STATION = 5000;
-//const int SAMPLE_TIME = 200;
-const int SPEEDING = 1;
-const int SLOWING = 2;
-const int STOPPING = 3;
-
-unsigned long curr_time, time_prev;
-const int DIST_ARRAY_SIZE = 100;
-int dist_cnt = 0;
 
 Sensor left_sensor;
 Sensor right_sensor;
+
 
 struct __attribute__((packed)) dataPacket {
   int sensor_name;
@@ -83,6 +46,9 @@ void setup()
 {
   Serial.begin(9600);
   Serial.println("Starting Setup");
+
+  pinMode(MOTOR_DIR, OUTPUT);
+  pinMode(MOTOR_PWM, OUTPUT);
   
   // Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
@@ -98,14 +64,6 @@ void setup()
   esp_now_set_self_role(ESP_NOW_ROLE_SLAVE);
   esp_now_register_recv_cb(OnDataRecv);
 
-  pinMode(RED_LED  , OUTPUT);
-  pinMode(BLUE_LED , OUTPUT);
-  pinMode(GREEN_LED, OUTPUT);
-  
-  
-  digitalWrite(RED_LED , LOW);
-  digitalWrite(BLUE_LED , LOW);
-  digitalWrite(GREEN_LED, LOW);
 
   train_motor.stop(); // make sure it is stopped
   
@@ -149,7 +107,6 @@ void loop()
   delay(SAMPLE_TIME);
 
 }
-
 // *****************************************
 // **************** END LOOP ***************
 // *****************************************

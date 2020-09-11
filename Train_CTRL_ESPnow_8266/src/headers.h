@@ -1,6 +1,6 @@
-#define MOTOR_PWM 10
-#define MOTOR_EN1 9
-#define MOTOR_EN2 8
+#define MOTOR_PWM 5 // PWM pin: between 0 - 1023 analog, or 0 off 1 full speed digital
+#define MOTOR_DIR 0 // 0 forward. 1 packward
+
 
 const int JUNK_VAL = 7777;
 const int DIST_BUFF_SIZE = 20;
