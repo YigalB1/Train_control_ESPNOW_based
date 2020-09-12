@@ -20,7 +20,7 @@
 #define RECEIVER_ROLE   ESP_NOW_ROLE_SLAVE              // set the role of the receiver
 #define WIFI_CHANNEL    1
 
-const int sensor_name = 0;  // 0 for Left, 1 for Right
+const int sensor_name = 1;  // 0 for Left, 1 for Right
 const int TRIGGER_PIN = 16;   //D0 Or GPIO-16 of nodemcu
 const int ECHO_PIN = 5;    //D1 Or GPIO-5 of nodemcu
 //const int led_2nd = 2;  

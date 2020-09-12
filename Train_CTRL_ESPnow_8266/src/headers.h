@@ -12,7 +12,7 @@ const int MIN_SPEED = 120; // was 120
 const int MAX_SPEED = 180; // was 180
 const int SPEED_INC = 5;
 const int TIME_IN_STATION = 5000;
-const int SAMPLE_TIME = 200; // time for loop to wait between each cycle
+const int SAMPLE_TIME = 2000; // time for loop to wait between each cycle
 
 
 const int LEFT = 0;
