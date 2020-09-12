@@ -20,17 +20,20 @@
 #define RECEIVER_ROLE   ESP_NOW_ROLE_SLAVE              // set the role of the receiver
 #define WIFI_CHANNEL    1
 
-const int sensor_name = 1;  // 0 for Left, 1 for Right
+const int sensor_name = 0;  // 0 for Left, 1 for Right
 const int TRIGGER_PIN = 16;   //D0 Or GPIO-16 of nodemcu
 const int ECHO_PIN = 5;    //D1 Or GPIO-5 of nodemcu
-const int led_2nd = 2;  //D4 Or GPIO-2 of nodemcu
+//const int led_2nd = 2;  
 const int MAX_DIST=80;
+const int ON_BOARD_LED = 2; //D4 Or GPIO-2 of nodemcu
+const int DELAY_CYCLE = 1000 ; // time to wait before next measurement
 
-//NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DIST);
+bool LED_ON = true ;
 
 Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
 
-uint8_t receiverAddress[] = {0x50, 0x02, 0x91, 0x69, 0x6F, 0x22};   //  MAC address of the receiver
+// uint8_t receiverAddress[] = {0x50, 0x02, 0x91, 0x69, 0x6F, 0x22};   //  MAC address of the receiver Damaged :(
+uint8_t receiverAddress[] = {0xEC, 0xFA, 0xBC, 0xC3, 0x01, 0xA0};   //  MAC address of the receiver
 
 struct __attribute__((packed)) dataPacket {
   int sensor_name;
@@ -54,7 +57,7 @@ int measure_dist(int _trig,int _echo)
 }
 
 void setup() {
-  pinMode(2, OUTPUT);     // GPIO2 (D4) led on ESP8266 module (in addition to onboard led on GPIO 16)
+  pinMode(LED_BUILTIN, OUTPUT);     // GPIO2 (D4) led on ESP8266 module (in addition to onboard led on GPIO 16)
   // on board led is GPIO16 (D0)
   pinMode(TRIGGER_PIN, OUTPUT);  // Sets the trigPin as an Output
   pinMode(ECHO_PIN, INPUT);   // Sets the echoPin as an Input
@@ -82,9 +85,18 @@ void setup() {
   Serial.println("Initialized.");
 }
 
+// ******************** LOOP ***************************
+
 void loop() {
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(100);
+  if (LED_ON) {
+    digitalWrite(LED_BUILTIN, HIGH);
+    LED_ON=false;
+  }
+  else {
+    digitalWrite(LED_BUILTIN, LOW);
+    LED_ON=true;
+  }
+  
   int distance = measure_dist(TRIGGER_PIN,ECHO_PIN);
   dataPacket packet;
   
@@ -101,6 +113,5 @@ void loop() {
   esp_now_send(receiverAddress, (uint8_t *) &packet, sizeof(packet));
   
   
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(400);
+  delay(DELAY_CYCLE);
 }
