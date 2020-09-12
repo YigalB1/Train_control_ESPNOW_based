@@ -3,6 +3,8 @@
  *  source: https://youtu.be/_cNAsTB5JpM
  *  Board Settings: ESP8266 + US sensor
  *  Board: ESP8266
+ * Two ultrasonic sensor (named 0 - Left,1 - Right) with ESP32 reading distance of train from the stattion
+ * Sending it to ESp8266 with motor driver
  ****************************************************
  */
 
@@ -18,7 +20,7 @@
 #define RECEIVER_ROLE   ESP_NOW_ROLE_SLAVE              // set the role of the receiver
 #define WIFI_CHANNEL    1
 
-const int sensor_name = 1;  // 0 for left, 1 for right
+const int sensor_name = 1;  // 0 for Left, 1 for Right
 const int TRIGGER_PIN = 16;   //D0 Or GPIO-16 of nodemcu
 const int ECHO_PIN = 5;    //D1 Or GPIO-5 of nodemcu
 const int led_2nd = 2;  //D4 Or GPIO-2 of nodemcu
@@ -28,7 +30,6 @@ const int MAX_DIST=80;
 
 Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
 
-//int distance;
 uint8_t receiverAddress[] = {0x50, 0x02, 0x91, 0x69, 0x6F, 0x22};   //  MAC address of the receiver
 
 struct __attribute__((packed)) dataPacket {
@@ -47,16 +48,8 @@ void transmissionComplete(uint8_t *receiver_mac, uint8_t transmissionStatus) {
 
 int measure_dist(int _trig,int _echo)
 {
-  //long duration;
-  int l_distance;
-  
+  int l_distance;  
   l_distance = ultrasonic.read();
-  //l_distance = sonar.ping_cm();
-
-//Serial.print("  ....  ");
-//Serial.print(l_distance);
-//Serial.print("     ....  ");
-delay(300);
   return l_distance;
 }
 
@@ -75,7 +68,7 @@ void setup() {
   Serial.println(WiFi.macAddress());
 
   WiFi.mode(WIFI_STA);
-  WiFi.disconnect();        // we do not want to connect to a WiFi network
+  WiFi.disconnect();        // Just in case, we do not want to connect to a WiFi network
 
   if(esp_now_init() != 0) {
     Serial.println("ESP-NOW initialization failed");

@@ -12,9 +12,11 @@ class Motor {
   int dist_buffer[DIST_BUFF_SIZE];
 
   void init() {
+/*
     for (int i=0;i<DIST_BUFF_SIZE;i++) {
       dist_buffer[i]=  JUNK_VAL;
     }
+    */
   } // of INIT routine
 
     void Go ( int _direction, int _speed) {
@@ -96,10 +98,12 @@ void slow_down() {
       if (distance > 100) {
         distance=101;
       }
+      /*
       for (int i=DIST_BUFF_SIZE-1;i>=1;i--) {
         dist_buffer[i] = dist_buffer[i-1];
       }
       dist_buffer[0] = distance;   
+      */
     } // of CALC SPEED routine
 
     void move_on() {

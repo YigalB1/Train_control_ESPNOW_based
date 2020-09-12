@@ -8,6 +8,7 @@
 
 Sensor left_sensor;
 Sensor right_sensor;
+bool led_on = true;
 
 
 struct __attribute__((packed)) dataPacket {
@@ -45,17 +46,21 @@ void decrease_speed();
 void setup()
 {
   Serial.begin(9600);
-  Serial.println("Starting Setup");
+  Serial.print("Starting Setup      ");
+   Serial.print("ESP8266 Motor driver Board MAC Address:  ");
+  Serial.print(WiFi.macAddress());
 
-  pinMode(MOTOR_DIR, OUTPUT);
-  pinMode(MOTOR_PWM, OUTPUT);
+  pinMode(MOTOR_DIR   , OUTPUT);
+  pinMode(MOTOR_PWM   , OUTPUT);
+  pinMode(ON_BOARD_LED, OUTPUT);
+  
   
   // Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
 
   // Init ESP-NOW
   if (esp_now_init() != 0) {
-    Serial.println("Error initializing ESP-NOW");
+    Serial.println("    Error initializing ESP-NOW");
     return;
   }
   
@@ -67,7 +72,7 @@ void setup()
 
   train_motor.stop(); // make sure it is stopped
   
-  Serial.println("******** End of SETUP ****");
+  Serial.println("       End of SETUP ****");
 }
 
 
@@ -78,7 +83,14 @@ void setup()
 
 void loop()
 {
-
+  if (led_on) {
+  digitalWrite(ON_BOARD_LED, HIGH);
+  led_on=false;
+  }
+  else {
+    digitalWrite(ON_BOARD_LED, LOW);
+    led_on=true;
+  }
   if (RIGHT == train_motor.direction)
     {
       train_motor.distance = right_sensor.distance_read;
@@ -102,7 +114,14 @@ void loop()
     Serial.print(" Speed: ");
     Serial.print(train_motor.speed);
     Serial.print("   Distance: ");
-    Serial.println(train_motor.distance);
+    Serial.print(train_motor.distance);
+    Serial.print("   LEFT  Distance: ");
+    Serial.print(left_sensor.distance_read);
+    Serial.print("   RIGHT Distance: ");
+    Serial.println(right_sensor.distance_read);
+
+
+
   }
   delay(SAMPLE_TIME);
 

@@ -1,5 +1,6 @@
-#define MOTOR_PWM 5 // PWM pin: between 0 - 1023 analog, or 0 off 1 full speed digital
-#define MOTOR_DIR 0 // 0 forward. 1 packward
+#define MOTOR_PWM       5   // PWM pin: between 0 - 1023 analog, or 0 off 1 full speed digital
+#define MOTOR_DIR       0   // 0 forward. 1 backward
+#define ON_BOARD_LED    2   //D4 Or GPIO-2 of nodemcu ESP8266
 
 
 const int JUNK_VAL = 7777;
