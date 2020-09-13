@@ -26,10 +26,12 @@ void OnDataRecv(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
   else {
     right_sensor.distance_read = packet.sensor_dist;
   }
+  /*
   Serial.print("Received from sensor: ");
   Serial.print(packet.sensor_name);
   Serial.print("  distance: ");
   Serial.println(packet.sensor_dist);  
+  */
 }  // of OnDataRecv function
 
 
@@ -53,7 +55,14 @@ void setup()
   pinMode(MOTOR_DIR   , OUTPUT);
   pinMode(MOTOR_PWM   , OUTPUT);
   pinMode(ON_BOARD_LED, OUTPUT);
+  pinMode(GREEN_LED, OUTPUT);
+  pinMode(YELLOW_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
   
+  // start with LEDs on, to make sure it works well
+  digitalWrite(GREEN_LED, HIGH);
+  digitalWrite(YELLOW_LED,HIGH);
+  digitalWrite(RED_LED,   HIGH);
   
   // Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);

@@ -30,19 +30,22 @@ class Motor {
 
 
     void Go_left ( int _speed_) {
-      digitalWrite(MOTOR_DIR, LEFT);      
+      digitalWrite(MOTOR_DIR, LEFT_DIR);      
       analogWrite(MOTOR_PWM, _speed_);
     } // of GO LEFT routine
 
 
     void Go_right ( int _speed_) {
-      digitalWrite(MOTOR_DIR, RIGHT);         
+      digitalWrite(MOTOR_DIR, RIGHT_DIR);         
       analogWrite(MOTOR_PWM, _speed_);
     } // of GO RIGHT routine
 
 
     void stop () {
-      analogWrite(MOTOR_PWM, ZERO);
+      analogWrite(MOTOR_PWM,  ZERO);
+      digitalWrite(GREEN_LED, LOW );
+      digitalWrite(YELLOW_LED,HIGH);
+      digitalWrite(RED_LED,   LOW );
     } // of STOP routine
 
 
@@ -116,9 +119,17 @@ void slow_down() {
 
         if (direction == LEFT) {
           direction = RIGHT;
+          digitalWrite(GREEN_LED, HIGH );
+          digitalWrite(YELLOW_LED,LOW  );
+          digitalWrite(RED_LED,   LOW );
+
         }
         else {
           direction = LEFT;
+          digitalWrite(GREEN_LED, LOW );
+          digitalWrite(YELLOW_LED,LOW );
+          digitalWrite(RED_LED,   HIGH );
+
         }
         return;
       } // of IF 
