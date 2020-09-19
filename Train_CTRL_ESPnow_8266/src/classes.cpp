@@ -42,6 +42,7 @@ class Motor {
 
 
     void stop () {
+      speed = ZERO;
       analogWrite(MOTOR_PWM,  ZERO);
       digitalWrite(GREEN_LED, LOW );
       digitalWrite(YELLOW_LED,HIGH);
@@ -65,8 +66,11 @@ class Motor {
     }
     // ****************** decrease_speed **********************
     void decrease_speed() {
-      if (fixed_speed)
+      if (fixed_speed) {
+        speed = MAX_SPEED;
         return; // speed is not changing
+      }
+        
 
       speed -= SPEED_INC;
       if (speed < MIN_SPEED)
@@ -80,12 +84,6 @@ void slow_down() {
 
   speed = MIN_SPEED;
 } // of SLOW DOWN
-
-
-
-
-
-
 
 
     void calc_speed() {
@@ -148,17 +146,10 @@ void slow_down() {
       }
       
     increase_speed();
+    //Serial.print("speed: ");
+    //Serial.println(speed);
     Go(direction, speed);
-    return;    
-          
-  
-  
-
-
-
-
-
-
+    return;              
     } // of move_on
 
 };  // of Motor class

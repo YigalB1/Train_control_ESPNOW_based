@@ -10,6 +10,10 @@
 		{
 			"name": "Train_sensor_ESPnow_8266",
 			"path": "Train_sensor_ESPnow_8266"
+		},
+		{
+			"name": "Wemos_US_try",
+			"path": "..\\..\\PlatformIO\\Projects\\Wemos_US_try"
 		}
 	],
 	"settings": {}

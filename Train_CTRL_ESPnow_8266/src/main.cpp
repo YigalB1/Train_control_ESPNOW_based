@@ -48,6 +48,7 @@ void decrease_speed();
 void setup()
 {
   Serial.begin(9600);
+  Serial.print("");
   Serial.print("Starting Setup      ");
    Serial.print("ESP8266 Motor driver Board MAC Address:  ");
   Serial.print(WiFi.macAddress());
@@ -112,14 +113,30 @@ void loop()
     }
 
   train_motor.move_on();  // decides what to do next (stop/keep going / change direction)
-
-  if (DEBUG_MODE) {
-    Serial.print("dir: ");
-    if (train_motor.direction==LEFT)
-      Serial.print("LEFT ");
-    else
-      Serial.print("RIGHT");
   
+  if (DEBUG_MODE) {
+    String msg;
+    msg.concat("dir: ");
+    //Serial.print("dir: ");
+    if (train_motor.direction==LEFT) {
+      msg.concat("LEFT  ");
+      //Serial.print("LEFT ");
+    }
+    else{
+      msg.concat("RIGHT ");
+      //Serial.print("RIGHT");
+    }
+      
+    msg.concat("Speed: ");
+    msg.concat(train_motor.speed);
+    msg.concat("  Distance:");
+    msg.concat(train_motor.distance);
+    msg.concat("   LEFT  Distance: ");
+    msg.concat(left_sensor.distance_read);
+    msg.concat("   RIGHT Distance: ");  
+    msg.concat(right_sensor.distance_read);
+
+/*
     Serial.print(" Speed: ");
     Serial.print(train_motor.speed);
     Serial.print("   Distance: ");
@@ -128,11 +145,12 @@ void loop()
     Serial.print(left_sensor.distance_read);
     Serial.print("   RIGHT Distance: ");
     Serial.println(right_sensor.distance_read);
+*/
+    Serial.println(msg);
 
 
-
-  }
-  delay(SAMPLE_TIME);
+  } // of IF debug
+  //delay(SAMPLE_TIME);
 
 }
 // *****************************************
