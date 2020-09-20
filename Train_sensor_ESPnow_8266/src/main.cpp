@@ -20,7 +20,7 @@
 #define RECEIVER_ROLE   ESP_NOW_ROLE_SLAVE              // set the role of the receiver
 #define WIFI_CHANNEL    1
 
-const int sensor_name = 1;  // 0 for Left, 1 for Right
+const int sensor_name = 0;  // 0 for Left, 1 for Right
 const int TRIGGER_PIN = 16;   //D0 Or GPIO-16 of nodemcu
 const int ECHO_PIN = 5;    //D1 Or GPIO-5 of nodemcu
 //const int led_2nd = 2;  
@@ -33,7 +33,8 @@ bool LED_ON = true ;
 Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
 
 // uint8_t receiverAddress[] = {0x50, 0x02, 0x91, 0x69, 0x6F, 0x22};   //  MAC address of the receiver Damaged :(
-uint8_t receiverAddress[] = {0xEC, 0xFA, 0xBC, 0xC3, 0x01, 0xA0};   //  MAC address of the receiver
+// uint8_t receiverAddress[] = {0xEC, 0xFA, 0xBC, 0xC3, 0x01, 0xA0};   //  MAC address of the receiver
+uint8_t receiverAddress[] = {0x5C, 0xCF, 0x7F, 0x40, 0xE1, 0x26};   //  MAC address of the receiver
 
 struct __attribute__((packed)) dataPacket {
   int sensor_name;

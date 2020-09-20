@@ -6,6 +6,8 @@ class Motor {
   int speed = 0; // in work, to use as the speed of the train instead of global variable
   int direction = LEFT;
   int distance = 0;
+  int left_distance  = 777;
+  int right_distance = 777;
   int bad_reads_cnt = 0;
   int bad_reads_in_a_row = 0;
   int good_reads_cnt = 0;
@@ -19,14 +21,43 @@ class Motor {
     */
   } // of INIT routine
 
-    void Go ( int _direction, int _speed) {
-      if (LEFT == _direction) {
-        Go_left(_speed);
-      }
-      else {
-        Go_right(_speed);
-      }
-    } // of GO routine
+/*
+  String debug_msg() {
+    // TBD. not to use here !!!
+    // need to replace the Straing return value - not a good idea.
+    String msg;
+    msg.concat("dir: ");
+    //Serial.print("dir: ");
+    if (direction==LEFT) {
+      msg.concat("LEFT  ");
+      //Serial.print("LEFT ");
+    }
+    else{
+      msg.concat("RIGHT ");
+      //Serial.print("RIGHT");
+    }
+      
+    msg.concat("Speed: ");
+    msg.concat(speed);
+    msg.concat("  Distance:");
+    msg.concat(distance);
+    msg.concat("   LEFT  Distance: ");
+    msg.concat(left_distance);
+    msg.concat("   RIGHT Distance: ");  
+    msg.concat(right_distance);
+    return msg;
+  }
+*/
+
+
+  void Go ( int _direction, int _speed) {
+    if (LEFT == _direction) {
+      Go_left(_speed);
+    }
+    else {
+      Go_right(_speed);
+    }
+   } // of GO routine
 
 
     void Go_left ( int _speed_) {
@@ -158,7 +189,7 @@ void slow_down() {
 
 class Sensor {
   public:
-    int distance_read;
+    int distance_read = 777;
     void Turn_led_ON ( int _side, int _led) {
       // transmit to LED on the slected side 
       } // of Turn_led_ON

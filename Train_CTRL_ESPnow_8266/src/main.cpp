@@ -10,7 +10,6 @@ Sensor left_sensor;
 Sensor right_sensor;
 bool led_on = true;
 
-
 struct __attribute__((packed)) dataPacket {
   int sensor_name;
   int sensor_dist;
@@ -36,9 +35,7 @@ void OnDataRecv(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
 
 
 Motor train_motor;
-
 int last_good_dist=IN_RANGE;
-
 
 void slow_down();
 void increase_speed();
@@ -112,8 +109,17 @@ void loop()
       //Serial.print("L>> ");
     }
 
+  if (777 == train_motor.distance) {
+    // 777 means no reading 
+    train_motor.distance = 0; // make the train stop, since no reading 
+  }
+
+
+
   train_motor.move_on();  // decides what to do next (stop/keep going / change direction)
   
+
+
   if (DEBUG_MODE) {
     String msg;
     msg.concat("dir: ");
@@ -132,23 +138,16 @@ void loop()
     msg.concat("  Distance:");
     msg.concat(train_motor.distance);
     msg.concat("   LEFT  Distance: ");
-    msg.concat(left_sensor.distance_read);
-    msg.concat("   RIGHT Distance: ");  
-    msg.concat(right_sensor.distance_read);
-
-/*
-    Serial.print(" Speed: ");
-    Serial.print(train_motor.speed);
-    Serial.print("   Distance: ");
-    Serial.print(train_motor.distance);
-    Serial.print("   LEFT  Distance: ");
-    Serial.print(left_sensor.distance_read);
-    Serial.print("   RIGHT Distance: ");
-    Serial.println(right_sensor.distance_read);
-*/
+    if (left_sensor.distance_read==777) 
+      msg.concat("..");
+    else
+      msg.concat(left_sensor.distance_read);
+    msg.concat("   RIGHT Distance: ");
+    if (right_sensor.distance_read==777) 
+      msg.concat("..");
+    else
+      msg.concat(right_sensor.distance_read);
     Serial.println(msg);
-
-
   } // of IF debug
   //delay(SAMPLE_TIME);
 
