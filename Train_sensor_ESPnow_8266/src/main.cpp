@@ -26,7 +26,7 @@ const int ECHO_PIN = 5;    //D1 Or GPIO-5 of nodemcu
 //const int led_2nd = 2;  
 const int MAX_DIST=80;
 const int ON_BOARD_LED = 2; //D4 Or GPIO-2 of nodemcu
-const int DELAY_CYCLE = 1000 ; // time to wait before next measurement
+const int DELAY_CYCLE = 100 ; // time to wait before next measurement
 
 bool LED_ON = true ;
 
