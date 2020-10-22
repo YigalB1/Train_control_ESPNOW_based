@@ -21,7 +21,7 @@
 #define LEFT  0
 #define RIGHT 1
 
-const int sensor_name = LEFT;  // 0 for Left, 1 for Right
+const int sensor_name = RIGHT;  // 0 for Left, 1 for Right
 const int TRIGGER_PIN = 5; // was 16;   //D0 Or GPIO-16 of nodemcu
 const int ECHO_PIN = 4; // was 5;    //D1 Or GPIO-5 of nodemcu
 const int RED_LED_PIN = 12; 
@@ -30,6 +30,9 @@ const int GREEN_LED_PIN = 15;
 const int MAX_DIST=80;
 const int ON_BOARD_LED = 2; //D4 Or GPIO-2 of nodemcu
 const int DELAY_CYCLE = 100 ; // time to wait before next measurement
+const int IN_RANGE = 50; // Sensor's RED led will be ON when in range
+
+
 
 bool LED_ON = true ;
 
@@ -100,6 +103,13 @@ void setup() {
   test_hw();
   Serial.println("Les'd tested");
 
+  // Turn on GREEN led for sensor 0, or YELLOW for sensor 1, contantly
+  // RED led will signal in range (in loop)
+  if  (sensor_name == LEFT) 
+    digitalWrite(GREEN_LED_PIN,HIGH);
+  else
+    digitalWrite(YELLOW_LED_PIN,HIGH);
+
 }
 
 // ******************** LOOP ***************************
@@ -115,8 +125,13 @@ void loop() {
   }
   
   int distance = measure_dist(TRIGGER_PIN,ECHO_PIN);
+
+  if (distance<=IN_RANGE)
+    digitalWrite(RED_LED_PIN,HIGH);
+  else
+    digitalWrite(RED_LED_PIN,LOW);
+
   dataPacket packet;
-  
   packet.sensor_name = sensor_name;
   packet.sensor_dist = distance;
 
