@@ -13,22 +13,27 @@
 #include <Ultrasonic.h>
 //#include <NewPing.h>
 
-
-
 #define MY_NAME         "CONTROLLER_NODE"
 #define MY_ROLE         ESP_NOW_ROLE_CONTROLLER         // set the role of this device: CONTROLLER, SLAVE, COMBO
 #define RECEIVER_ROLE   ESP_NOW_ROLE_SLAVE              // set the role of the receiver
 #define WIFI_CHANNEL    1
 
-const int sensor_name = 0;  // 0 for Left, 1 for Right
-const int TRIGGER_PIN = 16;   //D0 Or GPIO-16 of nodemcu
-const int ECHO_PIN = 5;    //D1 Or GPIO-5 of nodemcu
-//const int led_2nd = 2;  
+#define LEFT  0
+#define RIGHT 1
+
+const int sensor_name = LEFT;  // 0 for Left, 1 for Right
+const int TRIGGER_PIN = 5; // was 16;   //D0 Or GPIO-16 of nodemcu
+const int ECHO_PIN = 4; // was 5;    //D1 Or GPIO-5 of nodemcu
+const int RED_LED_PIN = 12; 
+const int YELLOW_LED_PIN = 13; 
+const int GREEN_LED_PIN = 15; 
 const int MAX_DIST=80;
 const int ON_BOARD_LED = 2; //D4 Or GPIO-2 of nodemcu
 const int DELAY_CYCLE = 100 ; // time to wait before next measurement
 
 bool LED_ON = true ;
+
+void test_hw();
 
 Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
 
@@ -57,11 +62,19 @@ int measure_dist(int _trig,int _echo)
   return l_distance;
 }
 
+// ******************** SETUP ***************************
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);     // GPIO2 (D4) led on ESP8266 module (in addition to onboard led on GPIO 16)
   // on board led is GPIO16 (D0)
   pinMode(TRIGGER_PIN, OUTPUT);  // Sets the trigPin as an Output
   pinMode(ECHO_PIN, INPUT);   // Sets the echoPin as an Input
+
+  pinMode(RED_LED_PIN, OUTPUT);   // Sets the echoPin as an Input
+  pinMode(YELLOW_LED_PIN, OUTPUT);   // Sets the echoPin as an Input
+  pinMode(GREEN_LED_PIN, OUTPUT);   // Sets the echoPin as an Input
+
+
+  
 
   Serial.begin(9600);     // initialize serial port
   
@@ -84,6 +97,9 @@ void setup() {
   esp_now_add_peer(receiverAddress, RECEIVER_ROLE, WIFI_CHANNEL, NULL, 0);
 
   Serial.println("Initialized.");
+  test_hw();
+  Serial.println("Les'd tested");
+
 }
 
 // ******************** LOOP ***************************
@@ -115,4 +131,28 @@ void loop() {
   
   
   delay(DELAY_CYCLE);
+}
+
+void write_leds(int _value1, int _value2, int _value3) {
+  digitalWrite(GREEN_LED_PIN,_value1);
+  digitalWrite(YELLOW_LED_PIN,_value2);
+  digitalWrite(RED_LED_PIN,_value3);
+}
+void test_leds() {
+  for (int i=1;i<=3;i++) {
+    write_leds(LOW,LOW,LOW);
+    delay(500);
+    write_leds(HIGH,LOW,LOW);
+    delay(500);
+    write_leds(LOW,HIGH,LOW);
+    delay(500);
+    write_leds(LOW,LOW,HIGH);
+    delay(500);
+    write_leds(HIGH,HIGH,HIGH);
+    delay(500);
+    write_leds(LOW,LOW,LOW);
+  }
+}
+void test_hw(){
+  test_leds();
 }
