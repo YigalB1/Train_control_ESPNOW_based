@@ -1,0 +1,4 @@
+In sensor pcb: UltraSoninc sensor too close to WEMOS. Fix PCB.
+In sensor schematics & PCB: GPIO0 should not be used (in 2nd sensor). To change with another GPIO.
+In Sensor: Consider remove one Servo, maybe both?
+In Sensor: change name of Leds to colors? (not sure if this really a problem)
